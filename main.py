@@ -1,15 +1,17 @@
-from flask import Flask, flash, request, redirect, render_template
+from flask import Flask, flash, request, redirect, render_template, url_for
 from werkzeug.utils import secure_filename
 import cv2
 import numpy as np
 import io
+import os
+import secrets
 from PIL import Image
 import base64
 import matplotlib.pyplot as plt
 from Helpers import *
 
 app = Flask(__name__)
-app.secret_key = "secret key"
+app.secret_key = os.environ.get('SECRET_KEY', secrets.token_hex(16))
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
@@ -27,7 +29,7 @@ def upload_image():
     for file in request.files.getlist("file[]"):
         if file.filename == '':
             flash('No image selected for uploading')
-            return redirect(request.url)
+            return redirect(url_for('upload_form'))
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             filestr = file.read()
@@ -51,7 +53,7 @@ def upload_image():
 
     if not images:
         flash('No valid images were uploaded')
-        return redirect(request.url)
+        return redirect(url_for('upload_form'))
 
     # Generate the sharpness values graph
     plt.figure()
