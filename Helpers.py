@@ -5,6 +5,7 @@ class Helpers:
 	def __init__(self):
 		pass
 
+	@staticmethod
 	def resize(image, width=None, height=None, inter=cv2.INTER_AREA):
 	    dim = None
 	    (h, w) = image.shape[:2]
@@ -20,6 +21,7 @@ class Helpers:
 
 	    return resized
 
+	@staticmethod
 	def grab_contours(cnts):
 		if len(cnts) == 2:
 			cnts = cnts[0]
@@ -30,6 +32,7 @@ class Helpers:
 		return cnts
 
 
+	@staticmethod
 	def orders(pts):
 		rect = np.zeros((4, 2), dtype = "float32")
 		s = pts.sum(axis = 1)
@@ -43,6 +46,7 @@ class Helpers:
 
 		return rect
 
+	@staticmethod
 	def transform(image, pts):
 		rect = Helpers.orders(pts)
 		(tl, tr, br, bl) = rect

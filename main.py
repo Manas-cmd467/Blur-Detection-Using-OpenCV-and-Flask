@@ -9,8 +9,9 @@ import matplotlib.pyplot as plt
 from Helpers import *
 
 app = Flask(__name__)
+app.secret_key = "secret key"
 
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -48,6 +49,10 @@ def upload_image():
             base64img = "data:image/png;base64," + base64.b64encode(file_object.getvalue()).decode('ascii')
             images.append([message, base64img])
 
+    if not images:
+        flash('No valid images were uploaded')
+        return redirect(request.url)
+
     # Generate the sharpness values graph
     plt.figure()
     plt.plot(sharpness_values, marker='o')
@@ -57,6 +62,7 @@ def upload_image():
     plt.grid(True)
     graph_object = io.BytesIO()
     plt.savefig(graph_object, format='PNG')
+    plt.close()
     graph_object.seek(0)
     graph_base64 = "data:image/png;base64," + base64.b64encode(graph_object.getvalue()).decode('ascii')
 
